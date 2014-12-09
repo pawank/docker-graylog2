@@ -1,7 +1,12 @@
 #!/bin/sh
 
 
-ES_ID=$(docker run -d -p 9200:9200 -p 9300:9300 himedia/elasticsearch)
+ES_ID=$1
+if [ $# -eq 0 ]
+  then
+      echo "No elasticsearch instance ID supplied"
+      exit
+fi
 ES_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${ES_ID})
 echo $ES_ID
 echo $ES_IP
