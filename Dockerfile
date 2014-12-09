@@ -12,15 +12,15 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN sudo apt-get install -y wget
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y wget
 
 # Install packages
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' > /etc/apt/sources.list.d/mongodb.list
 #RUN echo 'deb http://finja.brachium-system.net/~jonas/packages/graylog2_repro/ wheezy main' > /etc/apt/sources.list.d/graylog2.list
-RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN sudo cd /tmp/ && wget https://packages.graylog2.org/repo/packages/graylog2-0.92-repository-ubuntu14.04_latest.deb && dpkg -i graylog2-0.92-repository-ubuntu14.04_latest.deb && rm -f graylog2-0.92-repository-ubuntu14.04_latest.deb
-RUN sudo apt-get install -y apt-transport-https
+RUN cd /tmp/ && wget https://packages.graylog2.org/repo/packages/graylog2-0.92-repository-ubuntu14.04_latest.deb && dpkg -i graylog2-0.92-repository-ubuntu14.04_latest.deb && rm -f graylog2-0.92-repository-ubuntu14.04_latest.deb
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
 RUN sudo apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y --force-yes graylog2-server graylog2-web
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y --force-yes graylog2-stream-dashboard
@@ -31,9 +31,9 @@ RUN sed -i 's@no@yes@' /etc/default/graylog2-server
 RUN sed -i 's@no@yes@' /etc/default/graylog2-web
 
 ADD ./graylog2-server.conf /etc/graylog2/server/server.conf
-RUN chown _graylog2:_graylog2 /etc/graylog2/server/server.conf
+RUN chown graylog2:graylog2 /etc/graylog2/server/server.conf
 ADD ./graylog2-web-interface.conf /etc/graylog2/web/graylog2-web-interface.conf
-RUN chown _graylog2:_graylog2 /etc/graylog2/web/graylog2-web-interface.conf
+RUN chown graylog2:graylog2 /etc/graylog2/web/graylog2-web-interface.conf
 
 # Expose Mongodb ports:
 #   - 27017: process
