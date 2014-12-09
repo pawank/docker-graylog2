@@ -1,5 +1,5 @@
-FROM phusion/baseimage:0.9.11
-MAINTAINER Geoffroy Aubry <gaubry@hi-media.com>
+FROM phusion/baseimage:0.9.15
+MAINTAINER Pawan Kumar <pawan.kumar@gmail.com>
 
 # Set correct environment variables.
 ENV HOME /root
@@ -12,11 +12,16 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+RUN sudo apt-get install -y wget
+
 # Install packages
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \
     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' > /etc/apt/sources.list.d/mongodb.list
-RUN echo 'deb http://finja.brachium-system.net/~jonas/packages/graylog2_repro/ wheezy main' > /etc/apt/sources.list.d/graylog2.list
+#RUN echo 'deb http://finja.brachium-system.net/~jonas/packages/graylog2_repro/ wheezy main' > /etc/apt/sources.list.d/graylog2.list
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN sudo cd /tmp/ && wget https://packages.graylog2.org/repo/packages/graylog2-0.92-repository-ubuntu14.04_latest.deb && dpkg -i graylog2-0.92-repository-ubuntu14.04_latest.deb && rm -f graylog2-0.92-repository-ubuntu14.04_latest.deb
+RUN sudo apt-get install -y apt-transport-https
+RUN sudo apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y --force-yes graylog2-server graylog2-web
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y --force-yes graylog2-stream-dashboard
 RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y mongodb-org
